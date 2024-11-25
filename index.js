@@ -1,7 +1,11 @@
+// Example: http://localhost:3000/donki-notifications
+
+
 // Import required modules
 const express = require("express");
 const axios = require("axios");
 require("dotenv").config(); // Load environment variables
+const cors = require("cors"); // Import CORS
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,11 +13,13 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON requests
 app.use(express.json());
 
+// Enable CORS for all origins
+app.use(cors());  
+
 // Basic route
 app.get("/", (req, res) => {
   res.send("Welcome to the NASA DONKI Microservice!");
 });
-
 
 const messageTypeDetails = {
   FLR: { fullName: "Solar Flare", description: "An intense burst of radiation from the sun." },
@@ -53,8 +59,8 @@ async function fetchDONKIData(type = "all") {
       const details = messageTypeDetails[notification.messageType] || {};
       return {
         ...notification,
-        fullName: details.fullName || "Unknown Type",
-        description: details.description || "No description available."
+        fullName: details.fullName || "Report",
+        description: details.description || "General space weather report or analysis."
       };
     });
 
